@@ -1,0 +1,6 @@
+
+> libxmljs@0.8.1 install C:\Java Workspace\NodeAPIGateway\node_modules\osprey\node_modules\libxmljs
+> node-gyp rebuild
+
+
+C:\Java Workspace\NodeAPIGateway\node_modules\osprey\node_modules\libxmljs>node "C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin\\..\..\node_modules\node-gyp\bin\node-gyp.js" rebuild 

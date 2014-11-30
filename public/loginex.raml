@@ -1,0 +1,37 @@
+#%RAML 0.8
+title: login
+version: 1.0
+
+/loginUser:
+  get:
+  post:
+    queryParameters:
+      username:
+        displayName: User Name
+        type: string
+        description: Customer's username
+        required: true
+      password:
+        displayName: Password
+        type: string
+        description: Customer's password
+        required: true
+        
+        
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                 {
+                   "data": {
+                      "page": "current page"
+                   },
+                   "success": true,
+                   "status": 200
+                 }
+      404:
+        body:
+          application/json:
+            example: |
+              {"message": "Page not found"}
