@@ -8,6 +8,7 @@
  , user = require('./routes/user')
  , http = require('http')
  , path = require('path')
+ , osprey  = require('osprey')    // binding .raml with Node
  , index = require('./routes/index');
 
  var app = express();
@@ -29,54 +30,18 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
-var options = {
-	host: 'localhost',
-	port: 5000,
-	path: '/loginUser',
-	method: 'POST'
-};
-
-var ser = http.request(options, function(res) {
-	console.log('STATUS: ' + res.statusCode);
-	console.log('HEADERS: ' + JSON.stringify(res.headers));
-	res.setEncoding('utf8');
-	res.on('data', function (chunk) {
-		console.log('BODY: ' + chunk);
-	});
-
-
-});
-
-
-
 app.get('/', routes.index);
-//app.get('/users', user.list);
 
-app.post('/gateway/loginUser', function(req, res, next){
-	
-	console.log("in gateway");
-	index.login(req, res);
-    //
-    // next();
-    // app.post('/loginUser', index.login);
-    //ser.end();
+// gateway API handler
+app.post('/gateway/loginUser', index.gatewayLogin);
 
-    //res.send();
-
-
-});
-
-
-
-//app.post('/loginUser', index.login);
-
-// app.all('/gateway/*', [require('./routes/middleware')]);
 
 var raml = require('raml-parser');
 
 raml.loadFile('./public/loginex.raml').then( function(data) {
-	console.log(data);
-	console.log('Data: ' + JSON.stringify(data));
+	// Loading RAML file
+	 console.log(data);
+	
 }, function(error) {
 	console.log('Error parsing: ' + error);
 });
@@ -85,11 +50,44 @@ raml.loadFile('./public/loginex.raml').then( function(data) {
 
 var myAPI;
 raml.composeFile('./public/loginex.raml').then( function(rootNode) {
+	// Assigning RAML file as a Root node in the application
 	console.log('Root Node: ' + rootNode);
-	//console.log('Root Node: ' + JSON.stringify(rootNode));
+	
 }, function(error) {
 	console.log('Error parsing: ' + error);
 });
+
+
+
+// var api = osprey.create('/api', app, {
+// 	ramlFile: './public/loginex1.raml',
+// 	logLevel: 'debug'
+// });
+
+
+
+
+// api.describe(function (api) {
+// 	api.get('/teams/:teamId', function (req, res) {
+//     // Your business logic here!
+//     res.send({
+//     	name: "Barcelona",
+//     	id: "BAR",
+//     	homeCity: "Barcelona",
+//     	stadium: "Camp Nou",
+//     	matches: 24
+//     });
+// });
+// })
+// .then(function (app) {
+
+// 	app.get('/', function(req, res) {
+// 		res.redirect('/api/console');
+// 	});
+
+// });
+
+
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + app.get('port'));
